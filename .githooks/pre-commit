@@ -1,0 +1,15 @@
+#!/bin/sh
+# Blocks commits made directly on main/master (project rule: work on feature branches).
+# Activate once per clone:  git config core.hooksPath .githooks
+
+branch=$(git branch --show-current)
+
+case "$branch" in
+  main|master)
+    echo "✖ Direct commits to '$branch' are not allowed." >&2
+    echo "  Create a branch first, e.g.: git switch -c feature/<short-name>" >&2
+    exit 1
+    ;;
+esac
+
+exit 0
