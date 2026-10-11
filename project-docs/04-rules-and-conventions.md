@@ -79,3 +79,17 @@ The user will add more rules and restrictions when the coding phase starts.
 - **Consistency is important.** When a decision changes, update every document it affects in the same
   task, or list the remaining inconsistencies for the user.
 - Numbers (D-, R-, S-, FR-, …) are never reused. A removed item leaves a gap in the numbering.
+
+### R-8 Security in every iteration (OWASP MASVS)
+- Security is one of the legs of the project, not a later phase. **Every task considers it**, including
+  the proof of concept.
+- **Standard:** OWASP MASVS, the OWASP security standard for mobile apps
+  (<https://mas.owasp.org/MASVS/>). Its control groups are STORAGE, CRYPTO, AUTH, NETWORK, PLATFORM, CODE,
+  RESILIENCE, and PRIVACY. The testing guide on the same site (MASTG) describes how to check them.
+- **In each task:**
+  - **Planning:** name the MASVS groups the task touches, or state "none" with a one-line reason.
+  - **Implementing:** follow the controls of those groups, and explain them as part of R-3.
+  - **Finishing:** the TODO file has a security check item, and the change log entry names the groups
+    that were checked in its Notes.
+- **Server-side work** (for example the future medicine catalog, D-4) follows OWASP ASVS instead, through
+  the `owasp-asvs` MCP server.

@@ -16,6 +16,33 @@
 
 ---
 
+## 2026-10-11 — Security rule R-8 (OWASP MASVS), root CLAUDE.md trimmed
+**Type:** documentation + setup
+
+**Summary:** Security became a project rule: R-8 makes it part of every task, with OWASP MASVS as the
+standard, because the earlier security rule lived in the user's global instructions and named a web
+standard (ASVS). The root `CLAUDE.md` lost two lines that restated automatic behaviour.
+
+**Decisions:** none (R-8 is a rule, not a D-decision).
+
+**Files:**
+- changed `04-rules-and-conventions.md` (new R-8)
+- changed the root `CLAUDE.md` (R-8 summary; "R-1 to R-8"; removed the "Also: global rules" line and
+  Session Start step 1)
+- changed `tasks/CLAUDE.md` (security check item in the TODO template)
+
+**Notes:**
+- Security check (R-8): none; documentation only.
+- Open item: R-8 names no strictness level. Choose a MAS profile when the first security-relevant code
+  is written.
+- Personal Claude config, outside the repo: the global instructions now hold only rules that apply to
+  every project (their OWASP section was removed), and two memory notes that repeated the repo were
+  deleted.
+- Open audit items, not done: the end-of-reply order of the glossary list and the TODO list, and a
+  `pre-push` hook to match the pre-commit hook.
+
+---
+
 ## 2026-10-11 — Claude setup fixes: rule scope for automated runs
 **Type:** documentation + setup
 

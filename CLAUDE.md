@@ -9,7 +9,7 @@ all personal data stays on the phone. Languages: EN / TR / DE.
 1. **Discuss details** (scheduling, notifications, other areas): started; continues alongside the
    later steps. Open items are listed in each section doc.
 2. **Alarm implementation research**: done → `project-docs/sections/alarm-research.md`.
-3. **Strict rules**: R-1 to R-7 defined; the user adds more over time (coding rules in the coding phase).
+3. **Strict rules**: R-1 to R-8 defined; the user adds more over time (coding rules in the coding phase).
 4. **Alarm proof of concept** (D-11): **next**. A tracer bullet: the `alarm-engine` code is kept, the
    test screen is throwaway. Tested per D-13. The full app starts only after it passes.
 5. **Architecture** (`project-docs/03-architecture.md`), then the MVP, step by step.
@@ -40,8 +40,8 @@ all personal data stays on the phone. Languages: EN / TR / DE.
 - **R-7:** Docs show the **current state only**: rewrite in place, no "revised by" stacking. History
   goes **only** in `CHANGELOG.md`. Record only plan- or structure-changing decisions. Keep all docs
   consistent.
-- Also: the global rules in `~/.claude/CLAUDE.md` apply (no commits to main/master, no secrets in chat,
-  OWASP ASVS for security-sensitive work).
+- **R-8:** **Security is part of every task.** Standard: OWASP MASVS (mobile). When planning, name the
+  MASVS groups a task touches (or "none" and why); check them before the task is closed.
 
 ## Navigation: Where to Find Things
 | When you need… | Read |
@@ -67,7 +67,6 @@ Folder-level CLAUDE.md files: `project-docs/CLAUDE.md`, `project-docs/sections/C
   `main`/`master`.
 
 ## Session Start Routine
-1. Read "Current Phase and Next Steps" above.
-2. Check `project-docs/tasks/` for an unfinished TODO file and continue it.
-3. Read the latest entry in `project-docs/CHANGELOG.md`.
-4. Before working in a folder, read that folder's `CLAUDE.md`.
+1. Check `project-docs/tasks/` for an unfinished TODO file and continue it.
+2. Read the latest entry in `project-docs/CHANGELOG.md`.
+3. Before working in a folder, read that folder's `CLAUDE.md`.
