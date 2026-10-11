@@ -5,6 +5,11 @@
 
 ## General Working Rules (from 2026-09-27)
 
+### Scope: interactive and automated sessions
+- R-3 and R-5 apply to **interactive sessions**, where the user is present to answer.
+- In **automated runs** (GitHub Actions: `.github/workflows/`), there is no one to wait for. Skip the
+  OK-waits, the TODO file, and the glossary list. All other rules still apply.
+
 ### R-1 Root CLAUDE.md
 - The project root has a `CLAUDE.md` with the common project information.
 - It must be **compact**, yet a good starting point for understanding **what** we are building and

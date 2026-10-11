@@ -34,6 +34,8 @@ all personal data stays on the phone. Languages: EN / TR / DE.
 - **R-4 / R-5:** Every task (code or docs) gets a TODO checklist in `project-docs/tasks/`, worked through
   item by item. **Every reply during a task ends with the TODO list (✅ done / ⬜ remaining / ➡️ next).**
   When it's done, add a summary to `project-docs/CHANGELOG.md` and delete the TODO file, **before** committing.
+- **Scope:** R-3 and R-5 apply to interactive sessions. Automated runs (GitHub Actions) skip the
+  OK-waits, the TODO file, and the glossary list.
 - **R-6:** More coding rules will come from the user in the coding phase.
 - **R-7:** Docs show the **current state only**: rewrite in place, no "revised by" stacking. History
   goes **only** in `CHANGELOG.md`. Record only plan- or structure-changing decisions. Keep all docs
