@@ -16,6 +16,26 @@
 
 ---
 
+## 2026-10-11 — Claude setup fixes: rule scope for automated runs
+**Type:** documentation + setup
+
+**Summary:** An audit of the Claude instructions and setup found three broken items, fixed here. R-3 and
+R-5 now state that they apply to interactive sessions only, because the GitHub Actions workflows read the
+same rules and have no one to wait for.
+
+**Decisions:** none.
+
+**Files:** changed the root `CLAUDE.md` (Scope line under "Strict Rules") and
+`04-rules-and-conventions.md` (new "Scope: interactive and automated sessions" subsection).
+
+**Notes:**
+- Personal Claude config, outside the repo: the OWASP ASVS MCP server was registered (the global rule
+  referred to it, but it was not connected), and the duplicate context7 plugin was disabled.
+- Open audit items, not done: redundant instructions and memory notes, the end-of-reply order of the
+  glossary list and the TODO list, and a `pre-push` hook to match the pre-commit hook.
+
+---
+
 ## 2026-09-27 — Rename to medicine-scheduler, connect GitHub, first main
 **Type:** setup
 
