@@ -16,6 +16,27 @@
 
 ---
 
+## 2026-10-11 — End-of-reply order for the glossary list and the TODO list
+**Type:** documentation + setup
+
+**Summary:** R-3 and R-5 both claimed the end of a reply. The glossary list now appears only after a work
+step and comes before the TODO list, which is always last. This closes the Claude setup audit.
+
+**Decisions:** none.
+
+**Files:** changed `04-rules-and-conventions.md` (R-3 glossary wording, new order line), the root
+`CLAUDE.md` (glossary row), and `tasks/CLAUDE.md` (life cycle step 4).
+
+**Notes:**
+- Security check (R-8): none; documentation wording and personal config cleanup, no app code.
+- A `pre-push` hook and a pull-request workflow were considered and dropped: the GitHub ruleset
+  "No direct pushes to main" already protects the remote (pull request required, no force push, no
+  deletion, no bypass).
+- Personal Claude config, outside the repo: a stale editor swap file and an old settings backup were
+  removed.
+
+---
+
 ## 2026-10-11 — Security rule R-8 (OWASP MASVS), root CLAUDE.md trimmed
 **Type:** documentation + setup
 

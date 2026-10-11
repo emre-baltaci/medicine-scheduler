@@ -35,9 +35,11 @@
 - **No full implementations or large modifications at once**, unless the user explicitly says so.
 - Before each step, explain **what** will be implemented and **how**. After it, explain **why** it works
   that way. Wait for the user's OK before the next step.
-- **Glossary:** at the end of each response, list a **few** new terms used in that step (not basics the
-  user already knows, such as git). The user picks which ones go into `glossary.md` (root, git-ignored,
-  personal), 2–3 lines each. Nothing is added without the user's pick.
+- **Glossary:** after a work step, list a **few** new terms used in that step (not basics the user
+  already knows, such as git). Replies without a work step (questions, plans, status) have no glossary
+  list. The user picks which ones go into `glossary.md` (root, git-ignored, personal), 2–3 lines each.
+  Nothing is added without the user's pick.
+- **Order at the end of a reply:** the glossary list comes first; the TODO list (R-5) is always last.
 - **Explanation level, based on the user's background:**
   - React / TypeScript: experienced. No need to explain basics.
   - React Native: little experience, mostly forgotten. Explain RN-specific concepts (native modules,
