@@ -57,7 +57,7 @@ all personal data stays on the phone. Languages: EN / TR / DE.
 | Alarm feasibility and platform facts (verified) | `project-docs/sections/alarm-research.md` |
 | Alarm proof of concept: scope, pass criteria, test plan | `project-docs/sections/alarm-poc.md` |
 | The task in progress | `project-docs/tasks/` (one TODO file per task) |
-| Terms and concepts for the user's learning | `glossary.md` (git-ignored, personal; list candidate terms at the end of a response, add only the ones the user picks) |
+| Terms and concepts for the user's learning | `glossary.md` (git-ignored, personal; list candidate terms after a work step, before the TODO list; add only the ones the user picks) |
 
 Folder-level CLAUDE.md files: `project-docs/CLAUDE.md`, `project-docs/sections/CLAUDE.md`,
 `project-docs/tasks/CLAUDE.md`. *(Add new folders here as they are created.)*
