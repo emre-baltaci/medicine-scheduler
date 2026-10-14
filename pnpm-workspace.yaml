@@ -1,0 +1,2 @@
+# Flat node_modules (npm-style) for React Native autolinking; revisit isolated mode in the architecture step
+nodeLinker: hoisted
