@@ -1,2 +1,10 @@
-<manifest>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android">
+    <uses-permission android:name="android.permission.SCHEDULE_EXACT_ALARM" />
+
+    <application>
+        <receiver
+            android:name=".AlarmReceiver"
+            android:exported="false" />
+    </application>
 </manifest>
+
