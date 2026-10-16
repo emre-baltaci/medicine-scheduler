@@ -1,0 +1,6 @@
+{
+  "platforms": ["android"],
+  "android": {
+    "modules": ["io.github.emre_baltaci.alarmengine.AlarmEngineModule"]
+  }
+}
