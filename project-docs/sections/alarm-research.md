@@ -73,6 +73,12 @@ alarm on the user's own phones must confirm it in practice before the full app i
 - Full-screen intent (the alarm screen over the lock screen): for apps targeting Android 14+, it is
   "limited to those that provide calling and alarms only". The user can turn it off.
   Check `canUseFullScreenIntent()`; settings page `ACTION_MANAGE_APP_USE_FULL_SCREEN_INTENT`. [V✓]
+  - Google Play: "only apps that have calling or alarm functionalities will have this permission enabled
+    by default", after a Play Console declaration (App content page). "Other apps may still use the
+    permission, but only after they have been granted the permission from the user", and must
+    "gracefully degrade the experience if denied". No removal from the store for using it.
+    (support.google.com/googleplay/android-developer/answer/13392821) [V✓]
+    **Whether Play accepts a medicine app's alarm declaration: [U].** If not, onboarding asks the user.
   - Without it, the alarm shows as a heads-up notification.
   - While the phone is in use, it shows as a heads-up instead of full screen. [V]
 - `POST_NOTIFICATIONS` (Android 13+) is off by default. Without it there is **no visible alarm UI**, so
