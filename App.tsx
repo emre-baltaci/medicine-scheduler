@@ -8,7 +8,7 @@ export default function App() {
   const [status, setStatus] = useState('No alarm set');
 
   const ringInOneMinute = () => {
-    const triggerAt = Date.now() + 60_000;
+    const triggerAt = Date.now() + 30_000;
     try {
       AlarmEngine.scheduleAlarm(1, triggerAt);
       setStatus(`Alarm 1 set for ${new Date(triggerAt).toLocaleTimeString()}`);
@@ -20,7 +20,7 @@ export default function App() {
   return (
     <View style={styles.container}>
       <Text>{AlarmEngine.hello('Emine & Emre')}</Text>
-      <Button title="Ring in 1 minute" onPress={ringInOneMinute} />
+      <Button title="Ring in 30 seconds" onPress={ringInOneMinute} />
       <Text>{status}</Text>
       <StatusBar style="auto" />
     </View>

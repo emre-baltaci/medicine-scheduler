@@ -10,8 +10,13 @@ all personal data stays on the phone. Languages: EN / TR / DE.
    later steps. Open items are listed in each section doc.
 2. **Alarm implementation research**: done → `project-docs/sections/alarm-research.md`.
 3. **Strict rules**: R-1 to R-8 defined; the user adds more over time (coding rules in the coding phase).
-4. **Alarm proof of concept** (D-11): **next**. A tracer bullet: the `alarm-engine` code is kept, the
-   test screen is throwaway. Tested per D-13. The full app starts only after it passes.
+4. **Alarm proof of concept** (D-11): **in progress**, in three tasks with one PR each:
+   - part 1: toolchain, skeleton, an alarm rings and can be stopped (**done**)
+   - part 2: alarm screen, persistence, re-arm, permissions (**next**)
+   - part 3: test screen, test plan, test runs, security check
+
+   A tracer bullet: the `alarm-engine` code is kept, the test screen is throwaway. Tested per D-13. The
+   full app starts only after it passes. Carried-over items: the latest `CHANGELOG.md` entry.
 5. **Architecture** (`project-docs/03-architecture.md`), then the MVP, step by step.
 
 ## Key Decisions (full list: `project-docs/05-decisions-log.md`)

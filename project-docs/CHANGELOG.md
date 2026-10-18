@@ -16,6 +16,53 @@
 
 ---
 
+## 2026-10-18 — Alarm proof of concept, part 1: an alarm rings and can be stopped
+**Type:** implementation + setup
+
+**Summary:** The PoC (D-11) is split into three tasks so each milestone gets its own pull request. Part 1
+sets up the Android toolchain and the Expo SDK 57 skeleton, and builds the first slice of `alarm-engine`:
+JS schedules an exact alarm clock, and when it fires a foreground service loops the alarm sound and
+vibration until the user taps Stop. Tested on the Android 16 emulator with the app open, swiped away, and
+with its process killed.
+
+**Decisions:** D-2, D-10, D-11 (no new D-numbers). Within the task: foreground service type
+`systemExempted` (alarm-research §2.3); scheduling rules in `modules/alarm-engine/CLAUDE.md`.
+
+**Files:**
+- created: the Expo app skeleton (`App.tsx`, `app.json`, `package.json`, `pnpm-workspace.yaml`, …),
+  `modules/alarm-engine/` (`AlarmEngineModule.kt`, `AlarmReceiver.kt`, `AlarmService.kt`, manifest,
+  TS module, `CLAUDE.md`), `.editorconfig`, `.prettierrc`
+- changed: root `CLAUDE.md` (folder list, work order), `sections/alarm-research.md` (Play full-screen
+  intent policy)
+- deleted: `tasks/2026-10-14-alarm-poc.md`
+
+**Notes:**
+- Security check (R-8): MASVS-PLATFORM checked in the merged manifest: receiver and service are
+  `exported="false"`, all intents explicit, all `PendingIntent`s `FLAG_IMMUTABLE`. MASVS-STORAGE: not
+  touched yet. MASVS-CODE: see the audit and lint items below.
+- Carried over to part 2 (screen, persistence, re-arm, permissions):
+  - open items: snooze duration (proposed 5 min, 1 min for testing); auto-stop timeout when nobody
+    reacts (proposed 10 min)
+  - step 7 direction: native alarm screen; one central action handler for Snooze / Taken / Stop, used by
+    the notification buttons and the alarm screen
+  - onboarding must block on `POST_NOTIFICATIONS`: without it the alarm rings with no visible UI
+  - `alarm-engine/android/build.gradle` has `lintOptions { abortOnError false }` from the template;
+    tighten it (current `lint {}` block)
+- Carried over to part 3 (test screen, test plan, test runs, security):
+  - on-time tolerance for the pass criteria (P-4)
+  - test plan: a force stop cancels all alarms by design; simulate a system kill with
+    `adb shell am kill <package>` or a swipe
+  - check whether full-screen intent is on by default for a sideloaded install
+  - `pnpm audit` (2026-10-14): `braces` 3.0.3 (high), `node-forge` 1.4.0 (high), `uuid` 7.0.3 (moderate),
+    all in Expo / Metro dev tooling, no fix; accepted, re-check
+  - the Expo template adds `INTERNET`, `SYSTEM_ALERT_WINDOW`, `READ/WRITE_EXTERNAL_STORAGE`; block them
+    for release builds (`android.blockedPermissions`), since the app is offline-first
+  - pnpm `nodeLinker: hoisted`; reconsider isolated mode in the architecture step
+- Emulator: it crashed twice inside Android Studio's Running Devices panel; the standalone window is
+  stable. Android Studio and the emulator must run on the NVIDIA GPU.
+
+---
+
 ## 2026-10-11 — End-of-reply order for the glossary list and the TODO list
 **Type:** documentation + setup
 
