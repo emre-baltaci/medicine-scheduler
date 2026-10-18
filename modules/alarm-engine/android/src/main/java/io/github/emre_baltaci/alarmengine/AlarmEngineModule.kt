@@ -22,6 +22,10 @@ class AlarmEngineModule : Module() {
         }
 
         Function("scheduleAlarm") { id: Int, triggerAtMillis: Long ->
+            if (triggerAtMillis <= System.currentTimeMillis()) {
+                throw CodedException("ERR_TIME_IN_PAST", "Alarm time must be in the future", null)
+            }
+
             val alarmManager = context.getSystemService(AlarmManager::class.java)
                 ?: throw CodedException("ERR_NO_ALARM_MANAGER", "AlarmManager is not available", null)
 
