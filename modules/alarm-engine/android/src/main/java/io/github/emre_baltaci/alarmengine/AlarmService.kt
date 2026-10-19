@@ -133,11 +133,13 @@ class AlarmService : Service() {
         vibrator = null
         player?.release()
         player = null
+        sendBroadcast(Intent(ACTION_RINGING_STOPPED).setPackage(packageName))
         super.onDestroy()
     }
 
     companion object {
         const val CHANNEL_ID = "alarms"
         const val NOTIFICATION_ID = 1
+        const val ACTION_RINGING_STOPPED = "io.github.emre_baltaci.alarmengine.RINGING_STOPPED"
     }
 }
