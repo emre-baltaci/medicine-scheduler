@@ -51,8 +51,8 @@ Offered as options when creating a schedule:
   (for example, the doctor changed their mind: "stay on 1 pill for one more week").
 - **Warning timing** (D-8): the warning is shown **after the last dose of the current
   phase is taken**. It tells the user that the dose changes from the next dose on.
-  - Note: "taken" tracking is post-MVP. Until then, "taken" means the user dismissed the last alarm of
-    the phase or confirmed it in the post-dose notification (FR-2.4). *(To be confirmed in the
+  - Note: "taken" tracking is post-MVP. Until then, "taken" means the user answered "Yes" in the follow-up
+    confirmation of the last alarm of the phase (FR-2.4), or pressed OK if the follow-up is turned off. *(To be confirmed in the
     notification design.)*
 
 ## Open / TBD
