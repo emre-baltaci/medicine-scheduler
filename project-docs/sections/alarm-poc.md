@@ -19,7 +19,14 @@
    - set, cancel, and list alarms (`AlarmManager.setAlarmClock`)
    - when an alarm fires: a full-screen alarm screen over the lock screen, a looping alarm-stream sound,
      and vibration
-   - **Snooze** and **Dismiss**
+   - **Snooze** and **OK**
+   - the **follow-up confirmation** notification after OK: Yes / Not yet / Skipped; a swipe counts as "no
+     answer" and asks again (FR-2.4)
+   - **auto-stop**, then the follow-up confirmation as a missed-alarm notification (FR-2.8)
+   - an event queue to JS: live events while JS runs, read on launch, acknowledged by JS
+   - snooze, follow-up, and auto-stop minutes and the texts passed per alarm from JS, with defaults
+     (5 / 5 / 10 min, English texts); the follow-up can be turned off (FR-2.9)
+   - neutral texts on the lock screen (NFR-4)
    - setting alarms again after a reboot, an app update, or a time / time zone change
    - permission checks (notifications, exact alarms, full-screen), with buttons that open the right
      settings pages
@@ -34,7 +41,7 @@ notifications; grouping medicines in one alarm; UI design; iOS.
 - In **every** scenario of the test plan, the alarm:
   - rings on time
   - shows the alarm screen
-  - responds correctly to Snooze and Dismiss
+  - responds correctly to Snooze and OK, and the follow-up confirmation follows OK
 - **Expected failures** (for example a force-stop on Android 15+, or a revoked permission) are **detected
   and reported** by the app, never silent.
 - Results are recorded in the test plan below as a PASS / FAIL table per scenario and Android version.
@@ -45,4 +52,4 @@ each result is checked. See D-13.)*
 
 ## Open / TBD
 - The exact tolerance for "on time" (for example within N seconds).
-- Snooze duration(s) for the PoC.
+- Test plan: swipe cases (ringing notification, follow-up, missed alarm) must never close a dose.

@@ -193,16 +193,20 @@ suitability judgment is ours]
    logic stays native; JS never has to run when an alarm fires.
    - JS → native: "the next N doses" (a rolling window), synced whenever the schedule changes and when
      the app opens.
-   - Native → JS: a log of what fired, was snoozed, or was dismissed while the app was closed. JS reads it
-     on launch.
+   - Native → JS: a queue of what happened (fired, snoozed, OK, follow-up answers, missed), stored on the
+     device. JS gets a live event while it runs and reads the queue on launch, then acknowledges each
+     entry. An event alone would be lost when JS is not running.
 2. **Android:** `setAlarmClock` for every dose and snooze → receiver → foreground service
-   (`systemExempted`) → full-screen alarm activity + looping `USAGE_ALARM` sound + Snooze/Taken
-   actions.
+   (`systemExempted`) → full-screen alarm activity + looping `USAGE_ALARM` sound + Snooze / OK
+   actions, then the follow-up confirmation notification (FR-2.4) and, if nobody reacts, auto-stop with a
+   missed-alarm notification (FR-2.8).
    - Re-arm receivers for boot, update, time, and time zone events.
    - Schedule stored in device-protected storage.
 3. **iOS 26+ (later, when iOS starts):** AlarmKit. `.relative` for "same local clock time" doses, `.fixed` for "same real interval"
    doses (S-6). Snooze through `.countdown` + a widget extension. Dose logging through `stopIntent`.
-4. **Before and after notifications** (FR-2.3 / FR-2.4) use `expo-notifications`.
+4. **Pre-dose notifications** (FR-2.3) use `expo-notifications`. The follow-up confirmation (FR-2.4) and
+   the missed-alarm notification (FR-2.8) are posted by `alarm-engine`: they follow the alarm in time and
+   must work while the app is closed.
 5. **Onboarding permission checks**, re-checked every time the app opens:
    - notifications
    - exact alarms
