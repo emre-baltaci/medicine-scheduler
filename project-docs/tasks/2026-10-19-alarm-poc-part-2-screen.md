@@ -27,6 +27,9 @@ leaves a missed-alarm notification, per-alarm settings and texts from JS, and li
       intent
 - [ ] 3. One central action handler for Snooze and OK, used by the notification buttons and the alarm
       screen; Snooze sets the alarm again with the same settings
+  - [x] 3a. `AlarmScheduler`: scheduling code shared by the module and the actions
+  - [x] 3b. `AlarmActions` + `AlarmActionReceiver`; the notification offers Snooze / OK
+  - [ ] 3c. Snooze / OK on the alarm screen; the screen closes when ringing stops and handles a new alarm
 - [ ] 4. Per-alarm settings and texts from JS with defaults: snooze (5 min), follow-up (5 min, can be off),
       auto-stop (10 min), English fallback texts; validated; neutral texts on the lock screen; no
       `SetTextI18n` lint warnings left (texts set without joining or literals)

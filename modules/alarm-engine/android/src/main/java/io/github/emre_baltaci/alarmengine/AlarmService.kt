@@ -30,14 +30,6 @@ class AlarmService : Service() {
     override fun onBind(intent: Intent?): IBinder? = null
 
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
-        if (intent?.action == ACTION_STOP) {
-            ServiceCompat.stopForeground(this, ServiceCompat.STOP_FOREGROUND_REMOVE)
-            stopSelf()
-            return START_NOT_STICKY
-        }
-
-        val stopIntent = Intent(this, AlarmService::class.java).setAction(ACTION_STOP)
-        val stopPending = PendingIntent.getService(this, 0, stopIntent, PendingIntent.FLAG_IMMUTABLE)
 
         val id = intent?.getIntExtra(AlarmReceiver.EXTRA_ALARM_ID, -1) ?: -1
 
@@ -60,7 +52,8 @@ class AlarmService : Service() {
             .setCategory(NotificationCompat.CATEGORY_ALARM)
             .setPriority(NotificationCompat.PRIORITY_MAX)
             .setOngoing(true)
-            .addAction(0, "Stop", stopPending)
+            .addAction(0, "Snooze", actionPending(AlarmActions.ACTION_SNOOZE, id))
+            .addAction(0, "OK", actionPending(AlarmActions.ACTION_OK, id))
             .setFullScreenIntent(screenPending, true)
             .setContentIntent(screenPending)
             .setForegroundServiceBehavior(NotificationCompat.FOREGROUND_SERVICE_IMMEDIATE)
@@ -87,6 +80,18 @@ class AlarmService : Service() {
             channel.enableVibration(false)
             getSystemService(NotificationManager::class.java).createNotificationChannel(channel)
         }
+    }
+
+    private fun actionPending(action: String, id: Int): PendingIntent {
+        val intent = Intent(this, AlarmActionReceiver::class.java)
+            .setAction(action)
+            .putExtra(AlarmReceiver.EXTRA_ALARM_ID, id)
+        return PendingIntent.getBroadcast(
+            this,
+            id,
+            intent,
+            PendingIntent.FLAG_IMMUTABLE or PendingIntent.FLAG_UPDATE_CURRENT
+        )
     }
 
     private fun startSound() {
@@ -134,6 +139,5 @@ class AlarmService : Service() {
     companion object {
         const val CHANNEL_ID = "alarms"
         const val NOTIFICATION_ID = 1
-        const val ACTION_STOP = "io.github.emre_baltaci.alarmengine.STOP"
     }
 }
