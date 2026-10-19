@@ -43,6 +43,16 @@ class AlarmService : Service() {
 
         createChannel()
 
+        val screenIntent = Intent(this, AlarmActivity::class.java)
+            .putExtra(AlarmReceiver.EXTRA_ALARM_ID, id)
+            .addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+        val screenPending = PendingIntent.getActivity(
+            this,
+            id,
+            screenIntent,
+            PendingIntent.FLAG_IMMUTABLE or PendingIntent.FLAG_UPDATE_CURRENT
+        )
+
         val notification = NotificationCompat.Builder(this, CHANNEL_ID)
             .setSmallIcon(android.R.drawable.ic_lock_idle_alarm)
             .setContentTitle("Medicine alarm")
@@ -51,6 +61,8 @@ class AlarmService : Service() {
             .setPriority(NotificationCompat.PRIORITY_MAX)
             .setOngoing(true)
             .addAction(0, "Stop", stopPending)
+            .setFullScreenIntent(screenPending, true)
+            .setContentIntent(screenPending)
             .setForegroundServiceBehavior(NotificationCompat.FOREGROUND_SERVICE_IMMEDIATE)
             .build()
 

@@ -23,12 +23,13 @@ leaves a missed-alarm notification, per-alarm settings and texts from JS, and li
 
 ## Checklist
 - [x] 1. Create branch `feature/alarm-poc-screen` and this TODO file
-- [ ] 2. Native alarm screen (Activity) over the lock screen, opened by the notification's full-screen
+- [x] 2. Native alarm screen (Activity) over the lock screen, opened by the notification's full-screen
       intent
 - [ ] 3. One central action handler for Snooze and OK, used by the notification buttons and the alarm
       screen; Snooze sets the alarm again with the same settings
 - [ ] 4. Per-alarm settings and texts from JS with defaults: snooze (5 min), follow-up (5 min, can be off),
-      auto-stop (10 min), English fallback texts; validated; neutral texts on the lock screen
+      auto-stop (10 min), English fallback texts; validated; neutral texts on the lock screen; no
+      `SetTextI18n` lint warnings left (texts set without joining or literals)
 - [ ] 5. Follow-up confirmation notification after OK: Yes / Not yet / Skipped; "Not yet" and a swipe ask
       again after the delay (unlimited); a swiped ringing notification keeps ringing
 - [ ] 6. Auto-stop: stop ringing and post the follow-up confirmation as a missed-alarm notification on its
@@ -47,6 +48,8 @@ leaves a missed-alarm notification, per-alarm settings and texts from JS, and li
     permission being granted again; pending follow-ups too
   - permission checks (notifications, exact alarms, full-screen) and settings buttons, available to JS;
     onboarding must block on `POST_NOTIFICATIONS`, since without it the alarm rings with no visible UI
+  - full-screen intent: granted by default on the Android 16 emulator (sideloaded); app-ops showed one
+    `USE_FULL_SCREEN_INTENT` reject ~7 s after the alarm screen opened (2026-10-19): find out why
   - tighten lint in `modules/alarm-engine/android/build.gradle` (`lint {}` block, fail on errors)
 - **Part 4, testing:** the items listed under "part 3" in the CHANGELOG entry 2026-10-18 (test screen,
   test plan, test runs, security check).
