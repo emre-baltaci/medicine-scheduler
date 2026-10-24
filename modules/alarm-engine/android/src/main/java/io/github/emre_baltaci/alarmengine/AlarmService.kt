@@ -31,12 +31,16 @@ class AlarmService : Service() {
 
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
 
-        val id = intent?.getIntExtra(AlarmReceiver.EXTRA_ALARM_ID, -1) ?: -1
+        if (intent == null) {
+            stopSelf()
+            return START_NOT_STICKY
+        }
+        val spec = AlarmSpec.from(intent)
+        val id = spec.id
 
         createChannel()
 
-        val screenIntent = Intent(this, AlarmActivity::class.java)
-            .putExtra(AlarmReceiver.EXTRA_ALARM_ID, id)
+        val screenIntent = spec.putInto(Intent(this, AlarmActivity::class.java))
             .addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
         val screenPending = PendingIntent.getActivity(
             this,
@@ -47,13 +51,13 @@ class AlarmService : Service() {
 
         val notification = NotificationCompat.Builder(this, CHANNEL_ID)
             .setSmallIcon(android.R.drawable.ic_lock_idle_alarm)
-            .setContentTitle("Medicine alarm")
-            .setContentText("Alarm $id")
+            .setContentTitle(spec.title)
+            .setContentText(spec.body.ifEmpty { null })
             .setCategory(NotificationCompat.CATEGORY_ALARM)
             .setPriority(NotificationCompat.PRIORITY_MAX)
             .setOngoing(true)
-            .addAction(0, "Snooze", actionPending(AlarmActions.ACTION_SNOOZE, id))
-            .addAction(0, "OK", actionPending(AlarmActions.ACTION_OK, id))
+            .addAction(0, spec.snoozeLabel, actionPending(AlarmActions.ACTION_SNOOZE, spec))
+            .addAction(0, spec.okLabel, actionPending(AlarmActions.ACTION_OK, spec))
             .setFullScreenIntent(screenPending, true)
             .setContentIntent(screenPending)
             .setForegroundServiceBehavior(NotificationCompat.FOREGROUND_SERVICE_IMMEDIATE)
@@ -82,13 +86,11 @@ class AlarmService : Service() {
         }
     }
 
-    private fun actionPending(action: String, id: Int): PendingIntent {
-        val intent = Intent(this, AlarmActionReceiver::class.java)
-            .setAction(action)
-            .putExtra(AlarmReceiver.EXTRA_ALARM_ID, id)
+    private fun actionPending(action: String, spec: AlarmSpec): PendingIntent {
+        val intent = spec.putInto(Intent(this, AlarmActionReceiver::class.java).setAction(action))
         return PendingIntent.getBroadcast(
             this,
-            id,
+            spec.id,
             intent,
             PendingIntent.FLAG_IMMUTABLE or PendingIntent.FLAG_UPDATE_CURRENT
         )

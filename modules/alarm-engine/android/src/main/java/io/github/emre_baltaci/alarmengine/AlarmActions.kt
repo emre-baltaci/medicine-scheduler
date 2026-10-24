@@ -8,33 +8,33 @@ object AlarmActions {
     const val ACTION_SNOOZE = "io.github.emre_baltaci.alarmengine.SNOOZE"
     const val ACTION_OK = "io.github.emre_baltaci.alarmengine.OK"
 
-    // PoC test value; item 4 passes the snooze minutes from JS (default 5)
-    private const val SNOOZE_MINUTES = 1L
 
-    fun handle(context: Context, action: String?, id: Int) {
+    fun handle(context: Context, action: String?, spec: AlarmSpec) {
         when (action) {
-            ACTION_SNOOZE -> snooze(context, id)
-            ACTION_OK -> ok(context, id)
+            ACTION_SNOOZE -> snooze(context, spec)
+            ACTION_OK -> ok(context, spec)
             else -> Log.w(AlarmReceiver.TAG, "Unknown alarm action: $action")
         }
     }
 
-    private fun snooze(context: Context, id: Int) {
-        val triggerAt = System.currentTimeMillis() + SNOOZE_MINUTES * 60 * 1000
+    private fun snooze(context: Context, spec: AlarmSpec) {
+        val next = spec.copy(
+            triggerAtMillis = System.currentTimeMillis() + spec.snoozeMinutes * 60_000L
+        )
         try {
-            AlarmScheduler.schedule(context, id, triggerAt)
+            AlarmScheduler.schedule(context, next)
         } catch (e: Exception) {
             // keep ringing: a failed snooze must not silence the alarm
-            Log.e(AlarmReceiver.TAG, "Snooze failed for alarm $id", e)
+            Log.e(AlarmReceiver.TAG, "Snooze failed for alarm ${spec.id}", e)
             return
         }
         stopRinging(context)
-        Log.i(AlarmReceiver.TAG, "Alarm $id snoozed for $SNOOZE_MINUTES min")
+        Log.i(AlarmReceiver.TAG, "Alarm ${spec.id} snoozed for ${spec.snoozeMinutes} min")
     }
 
-    private fun ok(context: Context, id: Int) {
+    private fun ok(context: Context, spec: AlarmSpec) {
         stopRinging(context)
-        Log.i(AlarmReceiver.TAG, "Alarm $id: OK")
+        Log.i(AlarmReceiver.TAG, "Alarm ${spec.id}: OK")
     }
 
     private fun stopRinging(context: Context) {

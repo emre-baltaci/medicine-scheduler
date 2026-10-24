@@ -30,9 +30,14 @@ leaves a missed-alarm notification, per-alarm settings and texts from JS, and li
   - [x] 3a. `AlarmScheduler`: scheduling code shared by the module and the actions
   - [x] 3b. `AlarmActions` + `AlarmActionReceiver`; the notification offers Snooze / OK
   - [x] 3c. Snooze / OK on the alarm screen; the screen closes when ringing stops and handles a new alarm
-- [ ] 4. Per-alarm settings and texts from JS with defaults: snooze (5 min), follow-up (5 min, can be off),
+- [ ] 4. Per-alarm settings and texts from JS with defaults: snooze (5 min), confirmation delay (5 min, 0 = off),
       auto-stop (10 min), English fallback texts; validated; neutral texts on the lock screen; no
       `SetTextI18n` lint warnings left (texts set without joining or literals)
+  - [x] 4a. `AlarmSpec`: one data class with all values of an alarm, put into / read from intents
+  - [x] 4b. `scheduleAlarm(id, time, options?)` from JS; validation in `AlarmScheduler`; TS types
+  - [x] 4c. The spec travels receiver → service → actions → screen; Snooze uses its minutes; texts used
+  - [ ] 4d. Neutral texts on the lock screen (NFR-4)
+  - [ ] 4e. The test button passes options (1 min snooze for testing)
 - [ ] 5. Follow-up confirmation notification after OK: Yes / Not yet / Skipped; "Not yet" and a swipe ask
       again after the delay (unlimited); a swiped ringing notification keeps ringing
 - [ ] 6. Auto-stop: stop ringing and post the follow-up confirmation as a missed-alarm notification on its
@@ -45,6 +50,7 @@ leaves a missed-alarm notification, per-alarm settings and texts from JS, and li
 ## Next Parts (carry over in step 9)
 - **Part 3, persistence** (`feature/alarm-poc-persistence`):
   - cancel and list alarms; the saved alarm list as the source of truth
+  - move the alarm data (`AlarmSpec`) into storage: intents then carry only the alarm id
   - the stored event queue (fired, snoozed, OK, follow-up answers, missed): JS reads it on launch and
     acknowledges each entry; the list of open doses in the app (FR-2.4)
   - set alarms again after reboot, locked boot, app update, time or time zone change, and the exact-alarm
@@ -54,6 +60,9 @@ leaves a missed-alarm notification, per-alarm settings and texts from JS, and li
   - full-screen intent: granted by default on the Android 16 emulator (sideloaded); app-ops showed one
     `USE_FULL_SCREEN_INTENT` reject ~7 s after the alarm screen opened (2026-10-19): find out why
   - tighten lint in `modules/alarm-engine/android/build.gradle` (`lint {}` block, fail on errors)
+- **Architecture step:** Zod (or similar) for runtime validation in the TS layer, for UX (settings forms,
+  stored or imported data), with friendly translated messages; the Kotlin checks in `AlarmScheduler` stay
+  the gatekeeper. Consider `z.infer` for the TS types; the limits must match the Kotlin ones.
 - **Part 4, testing:** the items listed under "part 3" in the CHANGELOG entry 2026-10-18 (test screen,
   test plan, test runs, security check).
 
