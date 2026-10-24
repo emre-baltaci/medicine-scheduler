@@ -10,7 +10,11 @@ export default function App() {
   const ringInOneMinute = () => {
     const triggerAt = Date.now() + 30_000;
     try {
-      AlarmEngine.scheduleAlarm(1, triggerAt);
+      AlarmEngine.scheduleAlarm(1, triggerAt, {
+        snoozeMinutes: 1,
+        title: 'Aspirin',
+        body: '1 pill',
+      });
       setStatus(`Alarm 1 set for ${new Date(triggerAt).toLocaleTimeString()}`);
     } catch (e) {
       setStatus(`Error: ${e instanceof Error ? e.message : String(e)}`);

@@ -6,20 +6,30 @@ import expo.modules.kotlin.records.Record
 class AlarmOptions : Record {
     @Field
     val snoozeMinutes: Int? = null
+
     @Field
     val confirmationDelayMinutes: Int? = null
+
     @Field
     val autoStopMinutes: Int? = null
+
     @Field
     val title: String? = null
+
     @Field
     val body: String? = null
+
     @Field
     val lockedTitle: String? = null
+
     @Field
     val snoozeLabel: String? = null
+
     @Field
     val okLabel: String? = null
+
+    @Field
+    val lockScreenDetails: LockScreenDetails? = null
 
     fun toSpec(id: Int, triggerAtMillis: Long) = AlarmSpec(
         id = id,
@@ -32,5 +42,6 @@ class AlarmOptions : Record {
         lockedTitle = lockedTitle ?: AlarmSpec.DEFAULT_LOCKED_TITLE,
         snoozeLabel = snoozeLabel ?: AlarmSpec.DEFAULT_SNOOZE_LABEL,
         okLabel = okLabel ?: AlarmSpec.DEFAULT_OK_LABEL,
+        lockScreenDetails = lockScreenDetails ?: LockScreenDetails.HIDDEN,
     )
 }

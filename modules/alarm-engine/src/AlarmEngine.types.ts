@@ -8,4 +8,5 @@ export type AlarmOptions = {
   lockedTitle?: string; // neutral text for the lock screen
   snoozeLabel?: string;
   okLabel?: string;
+  lockScreenDetails?: 'hidden' | 'title' | 'full'; // while locked; default 'hidden'
 };
