@@ -16,8 +16,9 @@ class AlarmEngineModule : Module() {
             "Hello $name! 👋"
         }
 
-        Function("scheduleAlarm") { id: Int, triggerAtMillis: Long ->
-            AlarmScheduler.schedule(context, id, triggerAtMillis)
+        Function("scheduleAlarm") { id: Int, triggerAtMillis: Long, options: AlarmOptions? ->
+            val spec = (options ?: AlarmOptions()).toSpec(id, triggerAtMillis)
+            AlarmScheduler.schedule(context, spec)
         }
     }
 }

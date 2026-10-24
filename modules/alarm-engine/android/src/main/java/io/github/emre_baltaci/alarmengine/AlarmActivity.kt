@@ -8,15 +8,19 @@ import android.content.IntentFilter
 import android.os.Build
 import android.os.Bundle
 import android.view.Gravity
+import android.view.View
 import android.view.WindowManager
+import android.widget.Button
 import android.widget.LinearLayout
 import android.widget.TextView
-import android.widget.Button
 import androidx.core.content.ContextCompat
 
 class AlarmActivity : Activity() {
-    private var alarmId = -1
-    private lateinit var detail: TextView
+    private lateinit var spec: AlarmSpec
+    private lateinit var titleView: TextView
+    private lateinit var bodyView: TextView
+    private lateinit var snoozeButton: Button
+    private lateinit var okButton: Button
 
     private val stopReceiver = object : BroadcastReceiver() {
         override fun onReceive(context: Context, intent: Intent) {
@@ -26,41 +30,32 @@ class AlarmActivity : Activity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-
         showOverLockScreen()
 
-        alarmId = intent.getIntExtra(AlarmReceiver.EXTRA_ALARM_ID, -1)
-
-        val title = TextView(this).apply {
-            text = "Medication reminder"
+        titleView = TextView(this).apply {
             textSize = 32f
             gravity = Gravity.CENTER
         }
-        detail = TextView(this).apply {
-            text = "Alarm $alarmId"
+        bodyView = TextView(this).apply {
             textSize = 20f
             gravity = Gravity.CENTER
         }
-
-        val snooze = Button(this).apply {
-            text = "Snooze"
-            setOnClickListener { AlarmActions.handle(this@AlarmActivity, AlarmActions.ACTION_SNOOZE, alarmId) }
+        snoozeButton = Button(this).apply {
+            setOnClickListener { AlarmActions.handle(this@AlarmActivity, AlarmActions.ACTION_SNOOZE, spec) }
         }
-
-        val ok = Button(this).apply {
-            text = "OK"
-            setOnClickListener { AlarmActions.handle(this@AlarmActivity, AlarmActions.ACTION_OK, alarmId) }
+        okButton = Button(this).apply {
+            setOnClickListener { AlarmActions.handle(this@AlarmActivity, AlarmActions.ACTION_OK, spec) }
         }
-
         val layout = LinearLayout(this).apply {
             orientation = LinearLayout.VERTICAL
             gravity = Gravity.CENTER
-            addView(title)
-            addView(detail)
-            addView(snooze)
-            addView(ok)
+            addView(titleView)
+            addView(bodyView)
+            addView(snoozeButton)
+            addView(okButton)
         }
         setContentView(layout)
+        show(AlarmSpec.from(intent))
 
         ContextCompat.registerReceiver(
             this,
@@ -73,13 +68,21 @@ class AlarmActivity : Activity() {
     override fun onNewIntent(intent: Intent) {
         super.onNewIntent(intent)
         setIntent(intent)
-        alarmId = intent.getIntExtra(AlarmReceiver.EXTRA_ALARM_ID, -1)
-        detail.text = "Alarm $alarmId"
+        show(AlarmSpec.from(intent))
     }
 
     override fun onDestroy() {
         unregisterReceiver(stopReceiver)
         super.onDestroy()
+    }
+
+    private fun show(newSpec: AlarmSpec) {
+        spec = newSpec
+        titleView.text = spec.title
+        bodyView.text = spec.body
+        bodyView.visibility = if (spec.body.isEmpty()) View.GONE else View.VISIBLE
+        snoozeButton.text = spec.snoozeLabel
+        okButton.text = spec.okLabel
     }
 
     private fun showOverLockScreen() {

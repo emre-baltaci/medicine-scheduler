@@ -8,8 +8,9 @@ import android.os.Build
 import expo.modules.kotlin.exception.CodedException
 
 object AlarmScheduler {
-    fun schedule(context: Context, id: Int, triggerAtMillis: Long) {
-        if (triggerAtMillis <= System.currentTimeMillis()) {
+    fun schedule(context: Context, spec: AlarmSpec) {
+        validate(spec)
+        if (spec.triggerAtMillis <= System.currentTimeMillis()) {
             throw CodedException("ERR_TIME_IN_PAST", "Alarm time must be in the future", null)
         }
 
@@ -22,12 +23,11 @@ object AlarmScheduler {
             throw CodedException("ERR_EXACT_ALARM_DENIED", "Exact alarm permission is not granted", null)
         }
 
-        val fireIntent = Intent(context, AlarmReceiver::class.java)
-            .putExtra(AlarmReceiver.EXTRA_ALARM_ID, id)
+        val fireIntent = spec.putInto(Intent(context, AlarmReceiver::class.java))
 
         val firePending = PendingIntent.getBroadcast(
             context,
-            id,
+            spec.id,
             fireIntent,
             PendingIntent.FLAG_IMMUTABLE or PendingIntent.FLAG_UPDATE_CURRENT
         )
@@ -37,6 +37,25 @@ object AlarmScheduler {
 
         val showPending = PendingIntent.getActivity(context, 0, showIntent, PendingIntent.FLAG_IMMUTABLE)
 
-        alarmManager.setAlarmClock(AlarmManager.AlarmClockInfo(triggerAtMillis, showPending), firePending)
+        alarmManager.setAlarmClock(AlarmManager.AlarmClockInfo(spec.triggerAtMillis, showPending), firePending)
+    }
+
+    private const val MAX_TEXT_LENGTH = 200
+
+    private fun validate(spec: AlarmSpec) {
+        requireOption(spec.snoozeMinutes in 1..120, "snoozeMinutes must be 1-120")
+        requireOption(spec.confirmationDelayMinutes in 0..120, "confirmationDelayMinutes must be 0-120")
+        requireOption(spec.autoStopMinutes in 1..60, "autoStopMinutes must be 1-60")
+        for (text in listOf(spec.title, spec.lockedTitle, spec.snoozeLabel, spec.okLabel)) {
+            requireOption(
+                text.isNotBlank() && text.length <= MAX_TEXT_LENGTH,
+                "texts must be 1-$MAX_TEXT_LENGTH characters"
+            )
+        }
+        requireOption(spec.body.length <= MAX_TEXT_LENGTH, "body must be at most $MAX_TEXT_LENGTH characters")
+    }
+
+    private fun requireOption(valid: Boolean, message: String) {
+        if (!valid) throw CodedException("ERR_INVALID_OPTION", message, null)
     }
 }
