@@ -53,3 +53,7 @@ each result is checked. See D-13.)*
 ## Open / TBD
 - The exact tolerance for "on time" (for example within N seconds).
 - Test plan: swipe cases (ringing notification, follow-up, missed alarm) must never close a dose.
+- Test plan: sound with the screen on (inside the app, in another app, on the home screen) and off, on
+  the physical phone too. On the emulator (2026-10-24) one silent ring was reported with the screen on,
+  but Android showed the `USAGE_ALARM` player started and unmuted every time (likely emulator host
+  audio).

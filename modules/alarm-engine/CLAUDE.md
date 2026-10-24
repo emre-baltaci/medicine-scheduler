@@ -55,9 +55,16 @@ Platform facts and sources: `../../project-docs/sections/alarm-research.md` §2.
   the follow-up (and the missed alarm, which is a follow-up) asks again after its delay; a swiped ringing
   notification doesn't stop the ringing. Only Snooze / OK on the alarm and Yes / Not yet / Skipped on
   the follow-up are decisions; re-asks are unlimited.
-- **Lock screen privacy (NFR-4):** while the phone is locked, notifications and the alarm screen show
-  only the neutral texts by default; medicine names and doses only after unlock, unless the user's
-  setting allows details on the lock screen.
+- **Lock screen privacy (NFR-4):** each alarm carries `lockScreenDetails` (`hidden` by default, `title`,
+  `full`). While the phone is locked (`KeyguardManager.isKeyguardLocked`), notifications and the alarm
+  screen show only what that level allows (`hidden`: `lockedTitle` only); after unlock
+  (`ACTION_USER_PRESENT`) they show title and body. Android's own redaction (`VISIBILITY_PRIVATE` with a
+  neutral public version) is set as well; the stricter one wins. The app lock (FR-5) is JS-side and
+  never blocks ring-time code.
+  - Register the `SCREEN_OFF` / `USER_PRESENT` receiver as `RECEIVER_EXPORTED`: `USER_PRESENT` is sent by
+    SystemUI (its own uid), not the system uid, so a `RECEIVER_NOT_EXPORTED` receiver never gets it
+    (verified on the Android 16 emulator, 2026-10-24). Safe because both are protected broadcasts.
+    App-internal broadcasts (`RINGING_STOPPED`) stay `RECEIVER_NOT_EXPORTED`.
 - **Time zones:** an alarm fires at the same absolute moment, not at the same local clock time. For
   "07:00 local wherever the user is", recalculate the times on a time zone change (user choice: S-6 in
   `scheduling.md`).

@@ -36,8 +36,12 @@ leaves a missed-alarm notification, per-alarm settings and texts from JS, and li
   - [x] 4a. `AlarmSpec`: one data class with all values of an alarm, put into / read from intents
   - [x] 4b. `scheduleAlarm(id, time, options?)` from JS; validation in `AlarmScheduler`; TS types
   - [x] 4c. The spec travels receiver → service → actions → screen; Snooze uses its minutes; texts used
-  - [ ] 4d. Neutral texts on the lock screen (NFR-4)
-  - [ ] 4e. The test button passes options (1 min snooze for testing)
+  - [ ] 4d. Lock screen levels (NFR-4): `lockScreenDetails` = hidden (default) / title / full; neutral
+        while locked, title and body after unlock
+    - [x] 4d-1. `LockScreenDetails` enum in `AlarmSpec`, `AlarmOptions`, and the TS type
+    - [x] 4d-2. Notification: texts by lock state, neutral public version, re-shown on unlock
+    - [ ] 4d-3. Alarm screen: texts by lock state, refreshed on unlock
+  - [x] 4e. The test button passes options (1 min snooze for testing)
 - [ ] 5. Follow-up confirmation notification after OK: Yes / Not yet / Skipped; "Not yet" and a swipe ask
       again after the delay (unlimited); a swiped ringing notification keeps ringing
 - [ ] 6. Auto-stop: stop ringing and post the follow-up confirmation as a missed-alarm notification on its
@@ -63,10 +67,16 @@ leaves a missed-alarm notification, per-alarm settings and texts from JS, and li
 - **Architecture step:** Zod (or similar) for runtime validation in the TS layer, for UX (settings forms,
   stored or imported data), with friendly translated messages; the Kotlin checks in `AlarmScheduler` stay
   the gatekeeper. Consider `z.infer` for the TS types; the limits must match the Kotlin ones.
+- **MVP (app UI):** the lock-screen setting with privacy warning and Android-settings hint (NFR-4); the
+  app lock and re-authentication with `expo-local-authentication` (FR-5).
 - **Part 4, testing:** the items listed under "part 3" in the CHANGELOG entry 2026-10-18 (test screen,
   test plan, test runs, security check).
 
 ## Notes
+- Android 16 emulator (2026-10-24): `dumpsys audio` logs "AudioHardening background playback would be
+  muted for io.github.emre_baltaci.medicinescheduler, level: full" when the alarm sound starts (warning
+  only on 16). Android 17 enforces it (alarm-research §2.3): verify the exact-alarm + `USAGE_ALARM`
+  exemption on the Android 17 emulator, and test with `adb shell cmd audio set-enable-hardening throw`.
 - The notification stays when the alarm screen exists: Android requires it for the foreground service,
   and it is the fallback while the phone is in use or full-screen intent is off.
 - The follow-up and missed-alarm notifications are posted by the engine, not JS (D-10): they must work

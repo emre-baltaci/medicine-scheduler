@@ -13,6 +13,7 @@ data class AlarmSpec(
     val lockedTitle: String = DEFAULT_LOCKED_TITLE,
     val snoozeLabel: String = DEFAULT_SNOOZE_LABEL,
     val okLabel: String = DEFAULT_OK_LABEL,
+    val lockScreenDetails: LockScreenDetails = LockScreenDetails.HIDDEN
 ) {
     fun putInto(intent: Intent): Intent = intent
         .putExtra(EXTRA_ID, id)
@@ -25,7 +26,14 @@ data class AlarmSpec(
         .putExtra(EXTRA_LOCKED_TITLE, lockedTitle)
         .putExtra(EXTRA_SNOOZE_LABEL, snoozeLabel)
         .putExtra(EXTRA_OK_LABEL, okLabel)
+        .putExtra(EXTRA_LOCK_SCREEN_DETAILS, lockScreenDetails.value)
 
+    fun titleFor(locked: Boolean): String =
+        if (locked && lockScreenDetails == LockScreenDetails.HIDDEN) lockedTitle else title
+
+    fun bodyFor(locked: Boolean): String =
+        if (locked && lockScreenDetails != LockScreenDetails.FULL) "" else body
+    
     companion object {
         const val DEFAULT_SNOOZE_MINUTES = 5
         const val DEFAULT_CONFIRMATION_DELAY_MINUTES = 5 // 0 = confirmation off
@@ -49,6 +57,7 @@ data class AlarmSpec(
         private const val EXTRA_LOCKED_TITLE = PREFIX + "LOCKED_TITLE"
         private const val EXTRA_SNOOZE_LABEL = PREFIX + "SNOOZE_LABEL"
         private const val EXTRA_OK_LABEL = PREFIX + "OK_LABEL"
+        private const val EXTRA_LOCK_SCREEN_DETAILS = PREFIX + "LOCK_SCREEN_DETAILS"
 
         fun from(intent: Intent) = AlarmSpec(
             id = intent.getIntExtra(EXTRA_ID, -1),
@@ -64,6 +73,7 @@ data class AlarmSpec(
             lockedTitle = intent.getStringExtra(EXTRA_LOCKED_TITLE) ?: DEFAULT_LOCKED_TITLE,
             snoozeLabel = intent.getStringExtra(EXTRA_SNOOZE_LABEL) ?: DEFAULT_SNOOZE_LABEL,
             okLabel = intent.getStringExtra(EXTRA_OK_LABEL) ?: DEFAULT_OK_LABEL,
+            lockScreenDetails = LockScreenDetails.fromValue(intent.getStringExtra(EXTRA_LOCK_SCREEN_DETAILS))
         )
     }
 }

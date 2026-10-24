@@ -60,6 +60,16 @@
 - FR-4.2 Adding a language must only require adding translation resources, with no code changes.
 - FR-4.3 Dates, times, and numbers are formatted for the user's locale.
 
+### FR-5 App Security
+- FR-5.1 **Optional app lock:** opening the app asks for the phone's biometrics or device credential
+  (fingerprint, face, PIN, pattern), and again after an adjustable time in the background. Offered in
+  onboarding. It **never blocks alarms**: ringing, the alarm screen, and notification actions work
+  without it (NFR-3, D-10). If the phone has no screen lock, the app tells the user it can't be used.
+- FR-5.2 **Re-authentication for privacy-reducing actions** (for example showing details on the lock
+  screen, NFR-4, or exporting data): always required, with the same biometrics or device credential.
+- FR-5.3 The app lock is not encryption. Data at rest relies on the phone's encryption; an encrypted
+  database is decided in the architecture step (NFR-4).
+
 ## Non-Functional Requirements
 - NFR-1 **Platforms**: **Android first** (D-1). iOS is **postponed, not dropped**. The architecture must stay
   iOS-ready (shared TypeScript code; a platform-neutral `alarm-engine` interface). If built, iOS minimum is 26 (D-9).
@@ -68,11 +78,18 @@
   app is closed, after the phone restarts, and in battery-saver modes, as far as each OS allows.
 - NFR-4 **Privacy**: medicine data is sensitive health data. It stays on the phone. This must stay
   compatible with a later store release (privacy policy, medical disclaimer, GDPR/KVKK).
-  - **Lock screen:** by default, notifications and the alarm screen show only neutral text (for example
-    "Medication reminder") while the phone is locked; medicine names and doses appear after unlock.
-    Showing details on the lock screen is a user setting. How Android redacts lock-screen content
-    (`VISIBILITY_PRIVATE`, public version, the user's lock-screen setting) is verified during
-    implementation.
+  - **Lock screen:** while the phone is locked, notifications and the alarm screen show one of three
+    levels, a user setting: **Hidden** (default: only a neutral text such as "Medication reminder"),
+    **Title only**, or **Title and body**. When the phone is unlocked, title and body are shown.
+    - Choosing a level other than Hidden needs re-authentication (FR-5.2) and shows a privacy warning
+      ("anyone who sees your locked phone sees this"), plus a hint that Android's own lock-screen
+      settings can still hide the content, with a button to the app's notification settings.
+    - The app does not detect Android's global "hide sensitive content" setting (no public API); it may
+      read its own notification channel's lock-screen visibility.
+    - Verified on the Android 16 emulator (2026-10-24): by default the lock screen shows all
+      notification content (`lock_screen_allow_private_notifications = 1`), so Android's public version
+      applies only when the user hides sensitive content. The app enforces the levels itself; the
+      stricter of the app and Android settings wins.
 - NFR-5 **Extensibility**: must be ready for later features (dose-taken tracking, medicine catalog
   server, multiple people).
 
