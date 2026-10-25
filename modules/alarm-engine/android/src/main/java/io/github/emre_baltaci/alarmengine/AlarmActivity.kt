@@ -28,6 +28,16 @@ class AlarmActivity : Activity() {
         }
     }
 
+    // screen off → locked texts at once; unlock → title and body (NFR-4)
+    private val lockStateReceiver = object : BroadcastReceiver() {
+        override fun onReceive(context: Context, intent: Intent) {
+            when (intent.action) {
+                Intent.ACTION_SCREEN_OFF -> render(locked = true)
+                Intent.ACTION_USER_PRESENT -> render(locked = false)
+            }
+        }
+    }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         showOverLockScreen()
@@ -63,6 +73,21 @@ class AlarmActivity : Activity() {
             IntentFilter(AlarmService.ACTION_RINGING_STOPPED),
             ContextCompat.RECEIVER_NOT_EXPORTED
         )
+        ContextCompat.registerReceiver(
+            this,
+            lockStateReceiver,
+            IntentFilter().apply {
+                addAction(Intent.ACTION_SCREEN_OFF)
+                addAction(Intent.ACTION_USER_PRESENT)
+            },
+            // exported: USER_PRESENT comes from SystemUI, not the system uid; both actions are protected broadcasts
+            ContextCompat.RECEIVER_EXPORTED
+        )
+    }
+
+    override fun onResume() {
+        super.onResume()
+        render(isPhoneLocked())
     }
 
     override fun onNewIntent(intent: Intent) {
@@ -73,16 +98,22 @@ class AlarmActivity : Activity() {
 
     override fun onDestroy() {
         unregisterReceiver(stopReceiver)
+        unregisterReceiver(lockStateReceiver)
         super.onDestroy()
     }
 
     private fun show(newSpec: AlarmSpec) {
         spec = newSpec
-        titleView.text = spec.title
-        bodyView.text = spec.body
-        bodyView.visibility = if (spec.body.isEmpty()) View.GONE else View.VISIBLE
         snoozeButton.text = spec.snoozeLabel
         okButton.text = spec.okLabel
+        render(isPhoneLocked())
+    }
+
+    private fun render(locked: Boolean) {
+        val body = spec.bodyFor(locked)
+        titleView.text = spec.titleFor(locked)
+        bodyView.text = body
+        bodyView.visibility = if (body.isEmpty()) View.GONE else View.VISIBLE
     }
 
     private fun showOverLockScreen() {

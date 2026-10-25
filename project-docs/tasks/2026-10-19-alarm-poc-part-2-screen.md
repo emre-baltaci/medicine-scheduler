@@ -30,17 +30,17 @@ leaves a missed-alarm notification, per-alarm settings and texts from JS, and li
   - [x] 3a. `AlarmScheduler`: scheduling code shared by the module and the actions
   - [x] 3b. `AlarmActions` + `AlarmActionReceiver`; the notification offers Snooze / OK
   - [x] 3c. Snooze / OK on the alarm screen; the screen closes when ringing stops and handles a new alarm
-- [ ] 4. Per-alarm settings and texts from JS with defaults: snooze (5 min), confirmation delay (5 min, 0 = off),
+- [x] 4. Per-alarm settings and texts from JS with defaults: snooze (5 min), confirmation delay (5 min, 0 = off),
       auto-stop (10 min), English fallback texts; validated; neutral texts on the lock screen; no
       `SetTextI18n` lint warnings left (texts set without joining or literals)
   - [x] 4a. `AlarmSpec`: one data class with all values of an alarm, put into / read from intents
   - [x] 4b. `scheduleAlarm(id, time, options?)` from JS; validation in `AlarmScheduler`; TS types
   - [x] 4c. The spec travels receiver → service → actions → screen; Snooze uses its minutes; texts used
-  - [ ] 4d. Lock screen levels (NFR-4): `lockScreenDetails` = hidden (default) / title / full; neutral
+  - [x] 4d. Lock screen levels (NFR-4): `lockScreenDetails` = hidden (default) / title / full; neutral
         while locked, title and body after unlock
     - [x] 4d-1. `LockScreenDetails` enum in `AlarmSpec`, `AlarmOptions`, and the TS type
     - [x] 4d-2. Notification: texts by lock state, neutral public version, re-shown on unlock
-    - [ ] 4d-3. Alarm screen: texts by lock state, refreshed on unlock
+    - [x] 4d-3. Alarm screen: texts by lock state, refreshed on unlock
   - [x] 4e. The test button passes options (1 min snooze for testing)
 - [ ] 5. Follow-up confirmation notification after OK: Yes / Not yet / Skipped; "Not yet" and a swipe ask
       again after the delay (unlimited); a swiped ringing notification keeps ringing
