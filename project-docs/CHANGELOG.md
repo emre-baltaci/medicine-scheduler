@@ -16,6 +16,88 @@
 
 ---
 
+## 2026-10-25 — Alarm proof of concept, part 2: alarm screen, Snooze / OK, settings, lock-screen privacy
+**Type:** implementation + documentation
+
+**Summary:** A ringing alarm now opens a full-screen alarm screen over the lock screen with Snooze and OK,
+which work the same from the notification through one central action handler. Each alarm carries its
+own settings and texts from JS (`AlarmSpec`), validated in Kotlin and kept on Snooze. While the phone is
+locked, the notification and the alarm screen show only what the lock-screen level allows (neutral by
+default). The confirmation flow (follow-up, auto-stop, live events) moved to part 3, so the PoC now has
+five parts.
+
+**Decisions:** D-10, D-11 (no new D-numbers). Requirements: FR-2.2 and FR-2.4 rewritten (Snooze / OK,
+follow-up confirmation with unlimited re-asks, a swipe is never a decision), new FR-2.8 (auto-stop with a
+missed-alarm notification), FR-2.9 (customizable reminder behavior), NFR-4 lock-screen levels, new FR-5
+(app security). Within the task: plain Android Views for the PoC alarm screen; texts come only from JS,
+the engine has English fallbacks; the option is named `confirmationDelayMinutes`.
+
+**Files:**
+- created: `AlarmActivity.kt`, `AlarmActions.kt`, `AlarmActionReceiver.kt`, `AlarmScheduler.kt`,
+  `AlarmSpec.kt`, `AlarmOptions.kt`, `LockScreenDetails.kt`, `LockState.kt` (all in
+  `modules/alarm-engine/android/.../alarmengine/`)
+- changed: `AlarmEngineModule.kt`, `AlarmReceiver.kt`, `AlarmService.kt`, the module manifest, the TS
+  module and types, `App.tsx` (test options); docs: root `CLAUDE.md` (work order, five parts),
+  `02-requirements.md`, `sections/alarm-poc.md`, `sections/alarm-research.md`, `sections/scheduling.md`,
+  `modules/alarm-engine/CLAUDE.md` (engine rules)
+- deleted: `tasks/2026-10-19-alarm-poc-part-2-screen.md`
+
+**Notes:**
+- Security check (R-8), passed:
+  - MASVS-PLATFORM: all four components `exported="false"` in the merged manifest; all five
+    `PendingIntent`s `FLAG_IMMUTABLE`; intents explicit or package-limited; the app-internal
+    `RINGING_STOPPED` receiver not exported; the lock-state receivers exported but limited to protected
+    broadcasts (`USER_PRESENT` comes from SystemUI, so a not-exported receiver never gets it).
+  - MASVS-PRIVACY: lock-screen levels on notification and screen; logs carry only the alarm id and
+    minutes. Accepted until part 4: texts travel inside the alarm's `PendingIntent` (system-only).
+  - MASVS-CODE: JS input validated in `AlarmScheduler` (future time, minute ranges, text length; the
+    enum by Expo); lint has no errors.
+- Carried over to **part 3, confirmation flow** (`feature/alarm-poc-confirmation`):
+  - follow-up confirmation notification after OK: Yes / Not yet / Skipped; "Not yet" and a swipe ask
+    again after `confirmationDelayMinutes` (unlimited; 0 = off); a swiped ringing notification keeps
+    ringing
+  - auto-stop after `autoStopMinutes`: stop ringing and post the confirmation as a missed-alarm
+    notification on its own channel
+  - live events to JS (OK, follow-up answers, missed), shown on the test screen; until part 4 they reach
+    JS only while it runs
+  - texts for the new notifications come from JS, like the alarm texts; lock-screen levels apply
+- Carried over to **part 4, persistence** (`feature/alarm-poc-persistence`):
+  - cancel and list alarms; the saved alarm list as the source of truth; move `AlarmSpec` into storage so
+    intents carry only the alarm id
+  - the stored event queue (fired, snoozed, OK, follow-up answers, missed): JS reads it on launch and
+    acknowledges each entry; the list of open doses in the app (FR-2.4)
+  - set alarms again after reboot, locked boot, app update, time or time zone change, and the exact-alarm
+    permission being granted again; pending follow-ups too
+  - permission checks (notifications, exact alarms, full-screen) and settings buttons, available to JS;
+    onboarding must block on `POST_NOTIFICATIONS`, since without it the alarm rings with no visible UI
+  - full-screen intent: granted by default on the Android 16 emulator (sideloaded); app-ops showed one
+    `USE_FULL_SCREEN_INTENT` reject ~7 s after the alarm screen opened (2026-10-19): find out why
+  - tighten lint in `modules/alarm-engine/android/build.gradle` (`lint {}` block, fail on errors)
+- Carried over to **part 5, testing**:
+  - on-time tolerance for the pass criteria (P-4); the test-plan items in `sections/alarm-poc.md`
+    (swipe cases, sound with the screen on and off)
+  - a force stop cancels all alarms by design; simulate a system kill with `adb shell am kill <package>`
+    or a swipe
+  - full-screen intent on other Android versions and the physical phone (on by default on Android 16)
+  - Android 17 audio hardening: Android 16 logs "background playback would be muted … level: full" when
+    the alarm sound starts (warning only); verify the exact-alarm + `USAGE_ALARM` exemption on Android 17
+    and test with `adb shell cmd audio set-enable-hardening throw`
+  - `pnpm audit` (2026-10-14): `braces` 3.0.3 (high), `node-forge` 1.4.0 (high), `uuid` 7.0.3 (moderate),
+    all in Expo / Metro dev tooling, no fix; accepted, re-check
+  - the Expo template adds `INTERNET`, `SYSTEM_ALERT_WINDOW`, `READ/WRITE_EXTERNAL_STORAGE`; block them
+    for release builds (`android.blockedPermissions`), since the app is offline-first
+- For the **architecture step**: Zod (or similar) for runtime validation in the TS layer (settings forms,
+  stored or imported data, translated messages), Kotlin stays the gatekeeper, limits must match; consider
+  `z.infer` for the TS types; Compose vs. Views for the real alarm screen; pnpm `nodeLinker: hoisted`
+  (reconsider isolated mode).
+- For the **MVP (app UI)**: the lock-screen setting with privacy warning and Android-settings hint
+  (NFR-4); the app lock and re-authentication with `expo-local-authentication` (FR-5).
+- Emulator: give it a PIN to test lock-screen behavior (it has none by default). It crashed twice in its
+  graphics backend after re-installs (host-side bug); the lock screen flashes briefly before the alarm
+  screen occludes it (Android's normal animation).
+
+---
+
 ## 2026-10-18 — Alarm proof of concept, part 1: an alarm rings and can be stopped
 **Type:** implementation + setup
 
