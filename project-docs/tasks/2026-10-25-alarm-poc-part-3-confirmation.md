@@ -24,13 +24,14 @@ confirmation as a missed alarm. JS gets live events for every answer (FR-2.4, FR
 
 ## Checklist
 - [x] 1. Create branch `feature/alarm-poc-confirmation` and this TODO file
-- [ ] 1a. Kotlin test setup in `modules/alarm-engine/android/build.gradle` (JUnit, AndroidX Test); both test
-      commands run
+- [x] 1a. Kotlin test setup in `modules/alarm-engine/android/build.gradle` (JUnit, AndroidX Test); both test
+      commands run (first tests: `LockScreenDetails.fromValue`, part of 1c; `AlarmSpec` intent round trip, part
+      of 1d; passed on the Android 16 emulator, 2026-11-15)
 - [ ] 1b. Make the logic testable: validation and time calculations as pure logic that receives `now`
-- [ ] 1c. JUnit tests: `titleFor` / `bodyFor` for all lock levels, `LockScreenDetails.fromValue`, validation
-      limits, snooze time
-- [ ] 1d. Instrumented tests: `AlarmSpec` intent round trip, scheduling sets `nextAlarmClock`, the same id
-      replaces the alarm, a short real alarm reaches the receiver
+- [ ] 1c. JUnit tests: `titleFor` / `bodyFor` for all lock levels, validation limits, snooze time
+      (`LockScreenDetails.fromValue`: done in 1a)
+- [ ] 1d. Instrumented tests: scheduling sets `nextAlarmClock`, the same id replaces the alarm, a short real
+      alarm reaches the receiver (`AlarmSpec` intent round trip: done in 1a)
 - [ ] 2. Follow-up confirmation notification `confirmationDelayMinutes` after OK (0 = off): Yes / Not yet /
       Skipped, on its own quiet channel, texts from JS with English fallbacks, lock-screen levels
 - [ ] 3. Re-ask: "Not yet" and a swipe (delete intent) ask again after the delay, without limit; a swiped
@@ -40,6 +41,8 @@ confirmation as a missed alarm. JS gets live events for every answer (FR-2.4, FR
 - [ ] 5. Live events to JS (OK, Yes / Not yet / Skipped, missed): Expo `Events` + `sendEvent`, shown on
       the test screen; until part 4 they reach JS only while it runs
 - [ ] 5a. Test run (R-9): unit tests, instrumented tests, lint, and `tsc`; record the results
+- [ ] 5b. CI (D-14): GitHub Actions workflow on every PR: `pnpm install`, JDK 17, `expo prebuild --platform android`,
+      then unit tests + lint; instrumented tests on an emulator (one retry allowed); workflow permissions read-only
 - [ ] 6. Security check (R-8): MASVS-PLATFORM, MASVS-PRIVACY, MASVS-CODE
 - [ ] 7. Move a summary to `CHANGELOG.md` (carry over the items for the next parts) and delete this TODO
       file (R-5)
