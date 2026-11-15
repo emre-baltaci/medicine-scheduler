@@ -9,10 +9,7 @@ import expo.modules.kotlin.exception.CodedException
 
 object AlarmScheduler {
     fun schedule(context: Context, spec: AlarmSpec) {
-        validate(spec)
-        if (spec.triggerAtMillis <= System.currentTimeMillis()) {
-            throw CodedException("ERR_TIME_IN_PAST", "Alarm time must be in the future", null)
-        }
+        validate(spec, System.currentTimeMillis())
 
         val alarmManager = context.getSystemService(AlarmManager::class.java)
             ?: throw CodedException("ERR_NO_ALARM_MANAGER", "AlarmManager is not available", null)
@@ -42,7 +39,7 @@ object AlarmScheduler {
 
     private const val MAX_TEXT_LENGTH = 200
 
-    private fun validate(spec: AlarmSpec) {
+    internal fun validate(spec: AlarmSpec, now: Long) {
         requireOption(spec.snoozeMinutes in 1..120, "snoozeMinutes must be 1-120")
         requireOption(spec.confirmationDelayMinutes in 0..120, "confirmationDelayMinutes must be 0-120")
         requireOption(spec.autoStopMinutes in 1..60, "autoStopMinutes must be 1-60")
@@ -53,6 +50,9 @@ object AlarmScheduler {
             )
         }
         requireOption(spec.body.length <= MAX_TEXT_LENGTH, "body must be at most $MAX_TEXT_LENGTH characters")
+        if (spec.triggerAtMillis <= now) {
+            throw CodedException("ERR_TIME_IN_PAST", "Alarm time must be in the future", null)
+        }
     }
 
     private fun requireOption(valid: Boolean, message: String) {
