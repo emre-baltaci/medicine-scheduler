@@ -23,7 +23,7 @@ confirmation as a missed alarm. JS gets live events for every answer (FR-2.4, FR
 - **MASVS-STORAGE:** none; nothing is stored in this part (the event queue is part 4).
 
 ## Checklist
-- [x] 1. Create branch `feature/alarm-poc-confirmation` and this TODO file
+- [x] 1. Create the first branch (now `feature/alarm-poc-tests`) and this TODO file
 - [x] 1a. Kotlin test setup in `modules/alarm-engine/android/build.gradle` (JUnit, AndroidX Test); both test
       commands run (first tests: `LockScreenDetails.fromValue`, part of 1c; `AlarmSpec` intent round trip, part
       of 1d; passed on the Android 16 emulator, 2026-11-15)
@@ -31,8 +31,17 @@ confirmation as a missed alarm. JS gets live events for every answer (FR-2.4, FR
       (`AlarmScheduler.validate(spec, now)` internal, `AlarmSpec.snoozed(now)`)
 - [x] 1c. JUnit tests: `titleFor` / `bodyFor` for all lock levels, validation limits, snooze time
       (`LockScreenDetails.fromValue`: done in 1a)
-- [ ] 1d. Instrumented tests: scheduling sets `nextAlarmClock`, the same id replaces the alarm, a short real
-      alarm reaches the receiver (`AlarmSpec` intent round trip: done in 1a)
+- [x] 1d. Instrumented tests: scheduling sets `nextAlarmClock`, the same id replaces the alarm, a short real
+      alarm starts ringing (`AlarmSpec` intent round trip: done in 1a). The test app gets a test-only launcher
+      activity. "No permission gives `ERR_EXACT_ALARM_DENIED`" can't run in-process (revoking the permission stops
+      the app's process); it moved to the part 5 adb scenarios (`alarm-poc.md`). Run 2026-11-15, Android 16
+      emulator: 15 / 15 JUnit, 5 / 5 instrumented, lint 0 errors (2 expected warnings: `showWhenLocked` /
+      `turnScreenOn` are API 27+, older versions handled in code), `tsc` OK
+- [ ] 1e. PR 1 (test foundation) from `feature/alarm-poc-tests`
+- [ ] 1f. CI (D-14), PR 2 from `feature/alarm-poc-ci`: GitHub Actions workflow on every PR: `pnpm install`,
+      JDK 17, `expo prebuild --platform android`, then unit tests + lint; instrumented tests on an emulator (one
+      retry allowed); workflow permissions read-only
+- [ ] 1g. New branch `feature/alarm-poc-confirmation` from `main` for items 2–7 (PR 3)
 - [ ] 2. Follow-up confirmation notification `confirmationDelayMinutes` after OK (0 = off): Yes / Not yet /
       Skipped, on its own quiet channel, texts from JS with English fallbacks, lock-screen levels
 - [ ] 3. Re-ask: "Not yet" and a swipe (delete intent) ask again after the delay, without limit; a swiped
@@ -42,13 +51,13 @@ confirmation as a missed alarm. JS gets live events for every answer (FR-2.4, FR
 - [ ] 5. Live events to JS (OK, Yes / Not yet / Skipped, missed): Expo `Events` + `sendEvent`, shown on
       the test screen; until part 4 they reach JS only while it runs
 - [ ] 5a. Test run (R-9): unit tests, instrumented tests, lint, and `tsc`; record the results
-- [ ] 5b. CI (D-14): GitHub Actions workflow on every PR: `pnpm install`, JDK 17, `expo prebuild --platform android`,
-      then unit tests + lint; instrumented tests on an emulator (one retry allowed); workflow permissions read-only
 - [ ] 6. Security check (R-8): MASVS-PLATFORM, MASVS-PRIVACY, MASVS-CODE
 - [ ] 7. Move a summary to `CHANGELOG.md` (carry over the items for the next parts) and delete this TODO
       file (R-5)
 
 ## Notes
+- PR split (three PRs, one topic each): tests (1–1e), CI (1f), confirmation flow (2–7). This TODO file travels
+  with each PR; the changelog entry and its deletion come only in the last one (R-5).
 - Testing (R-9): every item below 1d includes its tests in the same commit.
 - The follow-up and missed-alarm notifications are posted by the engine, not JS (D-10): they must work
   while the app is closed.

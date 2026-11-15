@@ -1,0 +1,14 @@
+<manifest xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <!-- test app only: an entry point, so getLaunchIntentForPackage finds one -->
+    <application>
+        <activity
+            android:name="io.github.emre_baltaci.alarmengine.TestLauncherActivity"
+            android:exported="true">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
+    </application>
+</manifest>
