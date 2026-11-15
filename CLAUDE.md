@@ -9,7 +9,7 @@ all personal data stays on the phone. Languages: EN / TR / DE.
 1. **Discuss details** (scheduling, notifications, other areas): started; continues alongside the
    later steps. Open items are listed in each section doc.
 2. **Alarm implementation research**: done → `project-docs/sections/alarm-research.md`.
-3. **Strict rules**: R-1 to R-8 defined; the user adds more over time (coding rules in the coding phase).
+3. **Strict rules**: R-1 to R-9 defined; the user adds more over time (coding rules in the coding phase).
 4. **Alarm proof of concept** (D-11): **in progress**, in five tasks with one PR each:
    - part 1: toolchain, skeleton, an alarm rings and can be stopped (**done**)
    - part 2: alarm screen, Snooze / OK, per-alarm settings and texts, lock-screen privacy (**done**)
@@ -49,6 +49,8 @@ all personal data stays on the phone. Languages: EN / TR / DE.
   consistent.
 - **R-8:** **Security is part of every task.** Standard: OWASP MASVS (mobile). When planning, name the
   MASVS groups a task touches (or "none" and why); check them before the task is closed.
+- **R-9:** **Testing is part of every logic change** (D-14): tests in the same commit, a failing test first
+  for bug fixes, unit tests and `tsc` before each commit, also lint and instrumented tests before each PR.
 
 ## Navigation: Where to Find Things
 | When you need… | Read |

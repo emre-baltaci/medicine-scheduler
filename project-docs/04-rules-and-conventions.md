@@ -95,3 +95,18 @@ The user will add more rules and restrictions when the coding phase starts.
     that were checked in its Notes.
 - **Server-side work** (for example the future medicine catalog, D-4) follows OWASP ASVS instead, through
   the `owasp-asvs` MCP server.
+
+### R-9 Testing (D-14)
+- **Same commit:** every logic change in kept code includes its tests in the same commit. Throwaway code,
+  such as the PoC test screen, is exempt.
+- **Bug fixes:** write a failing test first, then fix the bug. New logic does not have to be test-first.
+- **Right layer:** pure logic uses JUnit. Real Android behavior uses instrumented tests on the emulator.
+  OEM, reboot, and Doze behavior use device scenarios. Keep pure logic separate from Android calls, and
+  pass the current time in instead of reading the system clock inside it.
+- **Before each commit:** run the unit tests and `tsc`.
+- **Before each PR:** also run lint and the instrumented tests on the emulator.
+- **Before closing a task:** the TODO file has a test item, and the change log entry records the results
+  in its Notes. A task cannot close with a failing or skipped test unless the user approves it.
+- **Who writes tests:** the same as other code. The user types them; Claude explains and reviews them.
+- **Later layers:** Jest and React Native Testing Library start with the real app's logic and UI, and
+  Maestro with its user flows. They are not set up during the PoC.
