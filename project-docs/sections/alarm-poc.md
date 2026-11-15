@@ -32,7 +32,8 @@
      settings pages
 3. A tiny test screen (TypeScript): "ring in 1 minute", "ring at HH:MM", a list of pending alarms, and
    permission status.
-4. Test plan, adb scenario scripts, and test runs (per D-13).
+4. Kotlin tests for `alarm-engine` (JUnit and instrumented, R-9, D-14).
+5. Test plan, adb scenario scripts, and test runs (per D-13).
 
 **Out of scope:** medicines, phases, and schedule logic; a database; languages; before and after
 notifications; grouping medicines in one alarm; UI design; iOS.

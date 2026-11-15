@@ -1,7 +1,7 @@
 # project-docs/tasks/ — Task TODO Checklists (R-5)
 
 Holds the TODO checklist of the task in progress, for implementation and documentation tasks alike.
-Full rule text: `../04-rules-and-conventions.md` (R-3, R-5, R-8).
+Full rule text: `../04-rules-and-conventions.md` (R-3, R-5, R-8, R-9).
 
 ## Life Cycle
 1. The task's plan is agreed with the user.
@@ -27,6 +27,7 @@ Full rule text: `../04-rules-and-conventions.md` (R-3, R-5, R-8).
 ## Checklist
 - [ ] 1. <small, reviewable step>
 - [ ] 2. …
+- [ ] N-2. Test run (R-9): results recorded, or "none" with the reason
 - [ ] N-1. Security check (R-8): MASVS groups touched, or "none" with the reason
 - [ ] N. Move a summary to CHANGELOG.md and delete this TODO file (R-5)
 ```

@@ -15,6 +15,7 @@ hands it the upcoming doses and reads back what happened. Android (Kotlin) now; 
 | `android/src/main/java/io/github/emre_baltaci/alarmengine/` | Kotlin sources (`AlarmEngineModule.kt` is the JS-facing module) |
 | `src/AlarmEngineModule.ts` | The TypeScript face of the module (`requireNativeModule('AlarmEngine')`) |
 | `src/AlarmEngine.types.ts` | Types shared by the TS side |
+| `android/src/test/`, `android/src/androidTest/` | Kotlin unit tests and instrumented tests |
 
 ## Rules
 - **Keep Kotlin and TypeScript in sync by hand.** TS types are not generated from Kotlin; a mismatch only
@@ -27,6 +28,15 @@ hands it the upcoming doses and reads back what happened. Android (Kotlin) now; 
 - **Security (R-8):** every manifest entry is a MASVS-PLATFORM concern. Components are `exported="false"`
   unless the system must reach them, and every `PendingIntent` is `FLAG_IMMUTABLE` unless it has to be
   mutable.
+
+## Testing (R-9, D-14)
+- **Where:** JUnit tests in `android/src/test/`, instrumented tests in `android/src/androidTest/`.
+- **Commands** (run in the root `android/` folder):
+  - unit tests: `./gradlew :alarm-engine:testDebugUnitTest`
+  - instrumented tests: `./gradlew :alarm-engine:connectedDebugAndroidTest` (needs a running emulator)
+  - lint: `./gradlew :alarm-engine:lintDebug`
+- Keep time calculations and validation as pure logic that receives `now`, so JUnit can test them without
+  Android. A real alarm firing is proven only by an instrumented test or on a device.
 
 ## Scheduling Rules
 Platform facts and sources: `../../project-docs/sections/alarm-research.md` §2.2 and §2.4.
