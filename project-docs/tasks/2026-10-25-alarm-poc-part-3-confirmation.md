@@ -27,8 +27,9 @@ confirmation as a missed alarm. JS gets live events for every answer (FR-2.4, FR
 - [x] 1a. Kotlin test setup in `modules/alarm-engine/android/build.gradle` (JUnit, AndroidX Test); both test
       commands run (first tests: `LockScreenDetails.fromValue`, part of 1c; `AlarmSpec` intent round trip, part
       of 1d; passed on the Android 16 emulator, 2026-11-15)
-- [ ] 1b. Make the logic testable: validation and time calculations as pure logic that receives `now`
-- [ ] 1c. JUnit tests: `titleFor` / `bodyFor` for all lock levels, validation limits, snooze time
+- [x] 1b. Make the logic testable: validation and time calculations as pure logic that receives `now`
+      (`AlarmScheduler.validate(spec, now)` internal, `AlarmSpec.snoozed(now)`)
+- [x] 1c. JUnit tests: `titleFor` / `bodyFor` for all lock levels, validation limits, snooze time
       (`LockScreenDetails.fromValue`: done in 1a)
 - [ ] 1d. Instrumented tests: scheduling sets `nextAlarmClock`, the same id replaces the alarm, a short real
       alarm reaches the receiver (`AlarmSpec` intent round trip: done in 1a)

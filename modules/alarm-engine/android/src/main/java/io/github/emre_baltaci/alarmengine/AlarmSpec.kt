@@ -33,7 +33,10 @@ data class AlarmSpec(
 
     fun bodyFor(locked: Boolean): String =
         if (locked && lockScreenDetails != LockScreenDetails.FULL) "" else body
-    
+
+    fun snoozed(now: Long): AlarmSpec =
+        copy(triggerAtMillis = now + snoozeMinutes * 60_000L)
+
     companion object {
         const val DEFAULT_SNOOZE_MINUTES = 5
         const val DEFAULT_CONFIRMATION_DELAY_MINUTES = 5 // 0 = confirmation off

@@ -18,9 +18,7 @@ object AlarmActions {
     }
 
     private fun snooze(context: Context, spec: AlarmSpec) {
-        val next = spec.copy(
-            triggerAtMillis = System.currentTimeMillis() + spec.snoozeMinutes * 60_000L
-        )
+        val next = spec.snoozed(System.currentTimeMillis())
         try {
             AlarmScheduler.schedule(context, next)
         } catch (e: Exception) {
