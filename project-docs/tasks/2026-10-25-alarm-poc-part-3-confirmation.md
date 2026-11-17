@@ -37,10 +37,10 @@ confirmation as a missed alarm. JS gets live events for every answer (FR-2.4, FR
       the app's process); it moved to the part 5 adb scenarios (`alarm-poc.md`). Run 2026-11-15, Android 16
       emulator: 15 / 15 JUnit, 5 / 5 instrumented, lint 0 errors (2 expected warnings: `showWhenLocked` /
       `turnScreenOn` are API 27+, older versions handled in code), `tsc` OK
-- [ ] 1e. PR 1 (test foundation) from `feature/alarm-poc-tests`
+- [x] 1e. PR 1 (test foundation) from `feature/alarm-poc-tests` (merged)
 - [ ] 1f. CI (D-14), PR 2 from `feature/alarm-poc-ci`: GitHub Actions workflow on every PR: `pnpm install`,
-      JDK 17, `expo prebuild --platform android`, then unit tests + lint; instrumented tests on an emulator (one
-      retry allowed); workflow permissions read-only
+      JDK 17, `expo prebuild --platform android`, then unit tests + lint; caches for pnpm and Gradle; skipped for
+      docs-only changes; workflow permissions read-only. Instrumented tests stay local (R-9), not in CI
 - [ ] 1g. New branch `feature/alarm-poc-confirmation` from `main` for items 2–7 (PR 3)
 - [ ] 2. Follow-up confirmation notification `confirmationDelayMinutes` after OK (0 = off): Yes / Not yet /
       Skipped, on its own quiet channel, texts from JS with English fallbacks, lock-screen levels
