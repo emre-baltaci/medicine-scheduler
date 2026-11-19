@@ -20,8 +20,11 @@ to make **dose changes over time** easy to set up, follow, change, and get notif
 - **Personal project** for the user's own use first. It may be published to the Play Store (and the App Store once iOS is built)
   later if the result is good. Design decisions should not block publishing later (privacy, disclaimers,
   store rules).
-- **One person** to start. Must be able to grow to **several people** (for example, family members)
-  tracked in the same app.
+- **One user per phone** (v1): each phone tracks only its own user. The data model is ready for other
+  people to manage the user's schedules later (FR-3).
+- **Users of all ages**, including **older people** whose app is installed and set up by relatives. Many of
+  them don't handle Android notifications well: notifications pile up unseen. Every feature and change is
+  checked against this group (reminders that can't get lost, simple interaction, setup by someone else).
 - **Offline-first**: all personal data stays on the phone. No online storage needed for schedules or
   alarms.
 - **Languages**: English, Turkish, German at launch. Adding languages later must be easy.
@@ -30,5 +33,4 @@ to make **dose changes over time** easy to set up, follow, change, and get notif
 - Tracking doses and amounts, so the user can confirm whether a medicine was taken.
 - A catalog of medicines available on the local market, served from a **separate server** (read-only
   reference data; personal data stays on the phone).
-- Tracking more people in the same app.
 - More features to be defined later.
