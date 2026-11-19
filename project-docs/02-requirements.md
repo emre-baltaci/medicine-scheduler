@@ -51,9 +51,15 @@
   be turned off. The app passes these settings to `alarm-engine` with each alarm (D-10).
 
 ### FR-3 People / Profiles
-- FR-3.1 v1 supports one person.
-- FR-3.2 The data model must support several people from the start, so that multi-person tracking can
-  be added later without migrating data.
+- FR-3.1 The app tracks **one person: the phone's user** (v1).
+- FR-3.2 Every record has a **unique id** (UUID) and `createdAt` / `updatedAt`, so v1 data can carry over
+  into a later, larger version without migration.
+- FR-3.3 Every schedule has a `userId` and an `ownerId`:
+  - `userId`: the person who takes the medicine, the phone's user.
+  - `ownerId`: the person who created the schedule, its owner. When the user creates it, `ownerId` equals
+    `userId`; later, another person with access can create schedules for the user and owns those.
+
+  In v1 both are always the phone's user. What an owner may do is decided later (Deferred / Open).
 
 ### FR-4 Localization
 - FR-4.1 Languages: English, Turkish, German.
@@ -91,10 +97,14 @@
       applies only when the user hides sensitive content. The app enforces the levels itself; the
       stricter of the app and Android settings wins.
 - NFR-5 **Extensibility**: must be ready for later features (dose-taken tracking, medicine catalog
-  server, multiple people).
+  server).
 
 ## Deferred / Open
 - Units and amounts (half pills, ml, mg, drops, ...): implementation detail, to be discussed later.
 - Exact list of scheduling patterns: to be clarified.
 - Detailed notification design: to be done. It includes what happens when an open dose (FR-2.4) is still
   open at the medicine's next dose.
+- Access rules for a later version where other people (family, carers, ...) manage the user's schedules
+  from their own phones: a person with access may change every schedule, or only the schedules they
+  created; and how the user grants a person control. Grants would be a separate list, so FR-3.3 already
+  holds the data both need.
